@@ -1,0 +1,30 @@
+﻿<?xml version = "1.0" encoding = "UTF-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:ToDoAppUI"
+             x:Class="ToDoAppUI.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <LinearGradientBrush x:Key="background" StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Color="#4f86f7" Offset="0.0" />
+                <GradientStop Color="#8A2BE2" Offset="1.0" />
+            </LinearGradientBrush>
+
+            <Style x:Key="PrimaryButtonStyle" TargetType="Button"> 
+
+                <Setter Property="BackgroundColor" Value="#BF000000" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="CornerRadius" Value="20" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="HeightRequest" Value="50" />
+                <Setter Property="Margin" Value="20,10" />
+                <Setter Property="WidthRequest" Value="300"/>
+            </Style>
+            
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36811.4
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDoAppBL", "ToDoAppBL\ToDoAppBL.csproj", "{924646DF-FE0C-4F6A-A7FF-F82D3278C5E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDoAppDL", "ToDoAppDL\ToDoAppDL.csproj", "{CFFFB065-3F24-449E-AA64-298784A22623}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDoAppUI", "ToDoAppUI\ToDoAppUI.csproj", "{0DBF8F6E-783F-4DA0-85CA-28EE3C1B7478}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{924646DF-FE0C-4F6A-A7FF-F82D3278C5E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{924646DF-FE0C-4F6A-A7FF-F82D3278C5E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{924646DF-FE0C-4F6A-A7FF-F82D3278C5E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{924646DF-FE0C-4F6A-A7FF-F82D3278C5E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFFFB065-3F24-449E-AA64-298784A22623}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFFFB065-3F24-449E-AA64-298784A22623}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFFFB065-3F24-449E-AA64-298784A22623}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFFFB065-3F24-449E-AA64-298784A22623}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DBF8F6E-783F-4DA0-85CA-28EE3C1B7478}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DBF8F6E-783F-4DA0-85CA-28EE3C1B7478}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DBF8F6E-783F-4DA0-85CA-28EE3C1B7478}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DBF8F6E-783F-4DA0-85CA-28EE3C1B7478}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B4C2E0A3-63DC-4ABE-A02A-8580ED40717C}
+	EndGlobalSection
+EndGlobal

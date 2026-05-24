@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                 x:Class="ToDoAppUI.TaakDetailPage"
+                 Title="{Binding Titel }"
+                 Background="{StaticResource background}">
+
+    <Grid RowDefinitions="Auto,*,Auto" BackgroundColor="#66000000">
+
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="15"
+                                     Spacing="15">
+
+                <!-- Titel -->
+                <Label Text="TITEL"
+                           FontSize="14"
+                           TextColor="White"
+                           FontAttributes="Bold"/>
+
+
+                <Entry 
+                               Margin="10,0"
+                              BackgroundColor="#BB000000"
+                               TextColor="White"
+                               Text="{Binding Titel}"
+                             />
+
+
+                <!-- Beschrijving -->
+                <Label Text="BESCHRIJVING"
+                           FontSize="14"
+                           TextColor="White"
+                           FontAttributes="Bold"
+                       MaxLines="2"
+       LineBreakMode="TailTruncation"/>
+
+
+                <Entry 
+                           
+                                HeightRequest="90"
+                                Margin="10,5"
+                                Text="{Binding Beschrijving}"
+                                TextColor="White" BackgroundColor="#BB000000"/>
+
+
+                <!-- Voor wie -->
+                <Label Text="VOOR WIE"
+                           FontSize="14"
+                           TextColor="White"
+                           FontAttributes="Bold"/>
+
+
+
+                <Picker Title="Selecteer gebruiker"
+                                SelectedItem="{Binding Persoon}"
+                                Margin="10,0"
+                                TitleColor="White"
+                                ItemsSource="{Binding Personen}"
+                        
+                         
+                            TextColor="White"
+                            BackgroundColor="#BB000000"
+                            />
+
+
+
+
+                <!-- Is gedaan -->
+                <Label Text="IS GEDAAN"
+                           FontSize="14"
+                           TextColor="White"
+                           FontAttributes="Bold"/>
+
+                <CheckBox IsChecked="{Binding IsAfgewerkt, Mode=TwoWay}"
+                              Color="White"/>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Bottom buttons -->
+        <Grid Grid.Row="2"
+                  Padding="15"
+                  ColumnDefinitions="*,*"
+                  ColumnSpacing="15"
+                   >
+
+            <Button Text="Annuleren"
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        Command="{Binding AnnuleerCommand}"/>
+
+            <Button Grid.Column="1"
+                        Text="Bewaren"
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        Command="{Binding BewaarCommand}"/>
+
+        </Grid>
+
+    </Grid>
+</ContentPage>

@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ToDoAppUI.MainPage"
+             Background="{StaticResource background}">
+
+    <ScrollView BackgroundColor="#66000000" >
+        <Grid >
+            <Grid.RowDefinitions>
+               
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*" ></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+
+            <Button Style="{StaticResource PrimaryButtonStyle}" Command="{Binding SorteerAllesCommand}" Grid.Row="0" Grid.Column="0" Text="Alles"/>
+            <Button Style="{StaticResource PrimaryButtonStyle}" Command="{Binding SorteerNietAfgewerktCommand}" Grid.Row="0" Grid.Column="1" Text="niet afgewerkt"/>
+            <Button Style="{StaticResource PrimaryButtonStyle}" Command="{Binding SorteerMeestRecentCommand}" Grid.Row="0" Grid.Column="2" Text="meest recent"/>
+            <CollectionView ItemsSource="{Binding TakenLijst}"
+               SelectedItem="{Binding GeselecteerdeTaak}"
+               SelectionMode="Single" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
+
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border StrokeThickness="0" BackgroundColor="Transparent">
+                            <Grid BackgroundColor="#BB000000" Padding="10" Margin="0,1"
+              ColumnDefinitions="Auto,*,Auto">
+
+                                <!-- Links: checkbox -->
+                                <CheckBox Grid.Column="0" 
+                      IsChecked="{Binding IsAfgewerkt, Mode=TwoWay}"
+                      VerticalOptions="Center"/>
+
+                                <!-- Midden: titel en beschrijving -->
+                                <VerticalStackLayout Grid.Column="1" Margin="5,0">
+                                    <Label Text="{Binding Titel}" 
+                       FontSize="Medium" 
+                       TextColor="White"/>
+                                    <Label Text="{Binding Beschrijving}" 
+                       FontSize="Subtitle" 
+                       TextColor="White"
+                       MaxLines="2"
+                       LineBreakMode="TailTruncation"/>
+                                </VerticalStackLayout>
+
+                                <!-- Rechts: naam en datum -->
+                                <VerticalStackLayout Grid.Column="2" 
+                                 VerticalOptions="Center"
+                                 HorizontalOptions="End">
+                                    <Label Text="{Binding Persoon}" 
+                       FontSize="Subtitle" 
+                       TextColor="White"
+                       HorizontalTextAlignment="End"/>
+                                    <Label Text="{Binding DatumTaakAanmaak, StringFormat='{0} gecreëerd'}"
+                       FontSize="Subtitle" 
+                       TextColor="White"
+                       HorizontalTextAlignment="End"/>
+                                </VerticalStackLayout>
+
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <HorizontalStackLayout Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2" HorizontalOptions="Center">
+                <Button Style="{StaticResource PrimaryButtonStyle}"  Text="Personen" Command="{Binding GaNaarPersonenLijstPageCommand}"/>
+                <Button Style="{StaticResource PrimaryButtonStyle}"  Text="Nieuwe taak" Command="{Binding GaNaarTaakDetailPageCommand}"/>
+            </HorizontalStackLayout>
+        </Grid>
+    </ScrollView>
+
+</ContentPage>

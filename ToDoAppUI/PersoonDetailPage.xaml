@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ToDoAppUI.PersoonDetailPage"
+             Title="PersoonDetailPage"
+             Background="{StaticResource background}">
+    
+    <Grid RowDefinitions="*, Auto" BackgroundColor="#66000000" >
+
+        <!-- Scrollbare inhoud -->
+        <ScrollView Grid.Row="0" Padding="20">
+            <VerticalStackLayout Spacing="12">
+
+                <!-- FOTO -->
+                <Label Text="Foto" TextColor="White" FontAttributes="Bold"/>
+
+                <Border StrokeThickness="0" WidthRequest="120" StrokeShape="RoundRectangle  25"
+                         BackgroundColor="Transparent" >
+                    <Image x:Name="FotoImage"
+                    HeightRequest="120"
+                    WidthRequest="120"
+                    Aspect="AspectFill"
+                    HorizontalOptions="Center"
+                    Source="{Binding Url}"/>
+                </Border>
+                    
+                
+                <Entry Placeholder="URL" BackgroundColor="#BB000000"
+                       Text="{Binding Url}"
+                       TextColor="White"
+                       FontSize="11"/>
+
+                <!-- VOORNAAM -->
+                <Label Text="Voornaam" TextColor="White" FontAttributes="Bold"/>
+                <Entry Text="{Binding Voornaam}"
+                       Placeholder="Voornaam" BackgroundColor="#BB000000"/>
+                <BoxView HeightRequest="1" Color="LightGray"/>
+
+                <!-- FAMILIENAAM -->
+                <Label Text="Achtenaam" TextColor="White" FontAttributes="Bold"/>
+                <Entry Text="{Binding Achternaam}"
+                       Placeholder="Familienaam" BackgroundColor="#BB000000"/>
+                <BoxView HeightRequest="1" Color="LightGray"/>
+
+                <!-- GEBOORTEDATUM -->
+                <Label Text="Geboorte Datum" TextColor="White        " FontAttributes="Bold"/>
+                <DatePicker Date="{Binding GeboorteDatum}"
+                            Format="dd/MM/yyyy" BackgroundColor="#BB000000"/>
+                <BoxView HeightRequest="1" Color="LightGray"/>
+
+            </VerticalStackLayout>
+
+        </ScrollView>
+
+        <!-- Knoppen onderaan -->
+        <Grid Grid.Row="1"
+              ColumnDefinitions="*, *, *"
+              >
+
+            <Button Grid.Column="0"
+                    Text="annuleren"
+                    Style="{StaticResource PrimaryButtonStyle }"
+                    Command="{Binding AnuleerCommand}"/>
+
+            <Button Grid.Column="1"
+                    Text="Bewaren"
+                    Style="{StaticResource PrimaryButtonStyle }"
+                    Command="{Binding BewaarCommand}"/>
+
+            <Button Grid.Column="2"
+                    Text="Verwijder"
+                    Style="{StaticResource PrimaryButtonStyle }"
+                    Command="{Binding VerwijderCommand}"/>
+
+        </Grid>
+    </Grid>
+        
+</ContentPage>

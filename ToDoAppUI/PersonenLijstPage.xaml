@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ToDoAppUI.PersonenLijstPage"
+             Title="Personen"
+             Background="{StaticResource background}">
+            <Grid BackgroundColor="#66000000">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+
+        </Grid.RowDefinitions>
+
+        <CollectionView ItemsSource="{Binding Personen}"
+                SelectedItem="{Binding GeselecteerdePersoon}"
+                SelectionMode="Single" >
+            
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate >
+                    <Border StrokeThickness="0"
+                         BackgroundColor="Transparent" 
+        >
+                    <HorizontalStackLayout  BackgroundColor="#BB000000" Padding="10" Margin="0,1" >
+                        <Border StrokeThickness="0" StrokeShape="RoundRectangle 20"
+                         BackgroundColor="Transparent"
+        Padding="1" >
+                            <Image x:Name="FotoImage"
+ HeightRequest="80"
+ WidthRequest="80"
+ Aspect="AspectFill"
+
+ 
+ Source="{Binding Url}"/>
+                        </Border>
+                        
+                        <Label Text="{Binding Voornaam}" Margin="5,10,2.5,10" VerticalTextAlignment="Center" FontSize="Medium"/>
+                            <Label Text="{Binding Achternaam}"   Margin="2.5,10" VerticalTextAlignment="Center" FontSize="Medium"/>
+                        <Label Text="{Binding Leeftijd, StringFormat='{0} jaar'}" VerticalTextAlignment="Center" HorizontalTextAlignment="End" FontSize="Subtitle"/>
+                    </HorizontalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <Button Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Text="Nieuw" Command="{Binding GaNaarNieuwPersoon}"/>
+        </Grid>
+</ContentPage>
