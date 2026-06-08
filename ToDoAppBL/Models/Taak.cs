@@ -2,6 +2,10 @@
 {
     public class Taak
     {
+        public Taak()
+        {
+        }
+
         public Taak(string titel, string beschrijving, bool isAfgewerkt, Persoon persoon)
         {
             Titel = titel;

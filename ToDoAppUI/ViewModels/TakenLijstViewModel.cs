@@ -3,7 +3,9 @@ using System.Windows.Input;
 using ToDoAppBL.Messages;
 using ToDoAppBL.Models;
 using ToDoAppBL.Services;
+using ToDoAppUI.Converters;
 using ToDoAppUI.services;
+using ToDoAppUI.States;
 using ToDoAppUI.ViewModels.Base;
 
 namespace ToDoAppUI.ViewModels
@@ -13,8 +15,11 @@ namespace ToDoAppUI.ViewModels
         public MessageService messageService { get; }
         private readonly ToDoService todoService;
         public NavigationService navigationService { get; }
+        private AbstractState _activeState;
+        
 
-        private string huidigeSortering = "Alles";
+
+
 
         public ICommand GaNaarPersonenLijstPageCommand { get; init; }
         public ICommand GaNaarTaakDetailPageCommand { get; init; }
@@ -23,7 +28,7 @@ namespace ToDoAppUI.ViewModels
         public ICommand SorteerMeestRecentCommand { get; init; }
 
 
-        private ObservableCollection<TaakViewModel> alleOrigineleTaken;
+        private ObservableCollection<TaakViewModel> _AlleTaken;
         private ObservableCollection<TaakViewModel> _takenLijst;
         public ObservableCollection<TaakViewModel> TakenLijst
         {
@@ -59,90 +64,73 @@ namespace ToDoAppUI.ViewModels
             todoService = _todoService;
             navigationService = _navigationService;
             messageService = _messageService;
+
             GaNaarPersonenLijstPageCommand = new Command(async () => await GaNaarPersonenLijstPage());
             GaNaarTaakDetailPageCommand = new Command(async () => await GaNaarTaakDetailPage());
             SorteerAllesCommand = new Command(() => SorteerAlles());
             SorteerNietAfgewerktCommand = new Command(() => SorteerNietAfgewerkt());
             SorteerMeestRecentCommand = new Command(() => SorteerMeestRecent());
-            alleOrigineleTaken = new ObservableCollection<TaakViewModel>(todoService.GeefAlleTaken().Select(ConvertToViewModel));
+
+            _AlleTaken = new ObservableCollection<TaakViewModel>(todoService.GeefAlleTaken().Select(x => TaakConverter.NaarViewModel(x, todoService, messageService)));
+           
+
             SorteerAlles();
             messageService.Register<TaakUpdateMessage>(this, (sender, message) =>
             {
-                var taakViewModel = alleOrigineleTaken.FirstOrDefault(o => o.Id == message.TaakUpdate.Id);
+                var taakViewModel = _AlleTaken.FirstOrDefault(o => o.Id == message.TaakUpdate.Id);
 
                 if (taakViewModel != null)
                 {
 
                     taakViewModel.Titel = message.TaakUpdate.Titel;
                     taakViewModel.Beschrijving = message.TaakUpdate.Beschrijving;
-                    taakViewModel.Persoon = message.TaakUpdate.Persoon;
+                    taakViewModel.PersoonViewModel = PersoonConverter.NaarViewModel( message.TaakUpdate.Persoon);
 
                     taakViewModel.UpdateIsAfgewerktZonderMessage(message.TaakUpdate.IsAfgewerkt);
-                    if (taakViewModel.IsAfgewerkt && TakenLijst.Contains(taakViewModel) && huidigeSortering == "NietAfgewerkt")
+                    if (taakViewModel.IsAfgewerkt && TakenLijst.Contains(taakViewModel) &&  _activeState is NietAfgewerktState)
                     {
                         TakenLijst.Remove(taakViewModel);
                     }
+
+
                 }
                 else
                 {
 
-                    var nieuweTaakVM = ConvertToViewModel(message.TaakUpdate);
-                    alleOrigineleTaken.Add(nieuweTaakVM);
-
-                    if (huidigeSortering == "Alles")
-                    {
-                        TakenLijst.Add(nieuweTaakVM);
-                    }
-                    else if (huidigeSortering == "NietAfgewerkt" && !nieuweTaakVM.IsAfgewerkt)
-                    {
-                        TakenLijst.Add(nieuweTaakVM);
-                    }
-                    else if (huidigeSortering == "MeestRecent")
-                    {
-                        TakenLijst.Insert(0, nieuweTaakVM);
-                    }
-
+                    TaakViewModel nieuweTaakVM = TaakConverter.NaarViewModel( message.TaakUpdate, _todoService, _messageService);
+                    _AlleTaken.Add(nieuweTaakVM);
+                    _activeState.Save(nieuweTaakVM);
+                    TakenLijst = _activeState._gesorteerdeLijst;
                 }
             });
         }
 
 
-        private TaakViewModel ConvertToViewModel(Taak taak)
-        {
-            TaakViewModel taakvm = new TaakViewModel(todoService, messageService)
-            {
-                Id = taak.Id,
-                Persoon = taak.Persoon,
-                Titel = taak.Titel,
-                Beschrijving = taak.Beschrijving,
-
-                DatumTaakAanmaak = taak.DatumTaakAanmaak
-
-
-            };
-            taakvm.UpdateIsAfgewerktZonderMessage(taak.IsAfgewerkt);
-            return taakvm;
-
-        }
+      
 
         private void SorteerMeestRecent()
         {
-            TakenLijst = new ObservableCollection<TaakViewModel>(alleOrigineleTaken.OrderByDescending(t => t.DatumTaakAanmaak));
-            huidigeSortering = "MeestRecent";
+
+            _activeState =  new RecentState(_AlleTaken);
+            _activeState.Sort();
+            TakenLijst = _activeState._gesorteerdeLijst;
 
         }
 
         private void SorteerNietAfgewerkt()
         {
-            TakenLijst = new ObservableCollection<TaakViewModel>(alleOrigineleTaken.Where(t => !t.IsAfgewerkt));
-            huidigeSortering = "NietAfgewerkt";
+
+            _activeState = new NietAfgewerktState(_AlleTaken);
+            _activeState.Sort();
+            TakenLijst = _activeState._gesorteerdeLijst;
 
         }
 
         private void SorteerAlles()
         {
-            TakenLijst = new ObservableCollection<TaakViewModel>(alleOrigineleTaken);
-            huidigeSortering = "Alles";
+            _activeState = new AllesState(_AlleTaken);
+            _activeState.Sort();
+            TakenLijst = _activeState._gesorteerdeLijst;
         }
 
         public async Task GaNaarPersonenLijstPage()

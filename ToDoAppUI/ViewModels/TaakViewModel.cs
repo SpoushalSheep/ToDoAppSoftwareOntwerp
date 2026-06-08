@@ -36,14 +36,14 @@ namespace ToDoAppUI.ViewModels
             }
         }
 
-        private Persoon _persooon;
-        public Persoon Persoon
+        private PersoonViewModel _persoonViewModel;
+        public PersoonViewModel PersoonViewModel
         {
-            get => _persooon;
+            get => _persoonViewModel;
 
             set
             {
-                _persooon = value;
+                _persoonViewModel = value;
                 NotifyPropertyChanged();
             }
         }
@@ -56,23 +56,24 @@ namespace ToDoAppUI.ViewModels
             set
             {
                 if (_isAfgewerkt == value) return;
-                _isAfgewerkt = value;
+                _isAfgewerkt = value; 
                 NotifyPropertyChanged();
 
+                if (Id == 0) return;
 
-                var taak = toDoService.GeefTaakMetId(Id);
-                taak.IsAfgewerkt = _isAfgewerkt;
+                
+                var taak = NaarTaak();
                 toDoService.BewaarTaak(taak);
                 messageService.Send(new TaakUpdateMessage(taak));
 
 
             }
         }
+        
 
-
-        public void UpdateIsAfgewerktZonderMessage(bool waarde)
+        public void UpdateIsAfgewerktZonderMessage(bool waarde) // reageert op een bericht zodat er geen oneindige lus onstaat
         {
-            if (_isAfgewerkt == waarde) return;
+            
             _isAfgewerkt = waarde;
             NotifyPropertyChanged(nameof(IsAfgewerkt));
         }
@@ -93,11 +94,11 @@ namespace ToDoAppUI.ViewModels
                 NotifyPropertyChanged();
             }
         }
-        public string PersoonString => $"{Persoon.Voornaam} {Persoon.Achternaam}  ";
+        public string PersoonString => $"{PersoonViewModel.Voornaam} {PersoonViewModel.Achternaam}  ";
 
         public Taak NaarTaak()
         {
-            return new Taak(Titel, Beschrijving, IsAfgewerkt, Persoon)
+            return new Taak(Titel, Beschrijving, IsAfgewerkt, PersoonViewModel.NaarPersoon())
             {
                 Id = Id,
                 DatumTaakAanmaak = this.DatumTaakAanmaak

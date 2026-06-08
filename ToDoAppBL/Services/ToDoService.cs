@@ -5,25 +5,27 @@ namespace ToDoAppBL.Services
 {
     public class ToDoService
     {
-        private readonly IToDoRepository ToDoRepository;
+        private readonly IPersoonRepository _persoonRepository;
+        private readonly ITaakRepository _taakRepository;
 
         
 
-        public ToDoService(IToDoRepository toDoRepository)
+        public ToDoService(IPersoonRepository toDoRepository, ITaakRepository taakRepository)
         {
-            ToDoRepository = toDoRepository;
+            _persoonRepository = toDoRepository;
+            _taakRepository = taakRepository;
            
         }
 
         public List<Persoon> GeefAllePersonen()
         {
-            return ToDoRepository.GeefAllePersonen();
+            return _persoonRepository.GeefAllePersonen();
 
         }
 
         public Persoon GeefPersoonMetId(int id)
         {
-            return ToDoRepository.GeefPersoonMetId(id);
+            return _persoonRepository.GeefPersoonMetId(id);
         }
 
         public void BewaarPersoon(Persoon persoon)
@@ -36,14 +38,14 @@ namespace ToDoAppBL.Services
 
             persoon.DatumProfielWijziging = DateTime.Now;
 
-            ToDoRepository.BewaarPersoon(persoon);
+            _persoonRepository.BewaarPersoon(persoon);
 
         }
 
         public void VerwijderPersoon(int id)
         {
 
-            ToDoRepository.VerwijderPersoon(id);
+            _persoonRepository.VerwijderPersoon(id);
         }
         public void BewaarTaak(Taak taak)
         {
@@ -55,17 +57,17 @@ namespace ToDoAppBL.Services
 
             taak.DatumTaakWijziging = DateTime.Now;
 
-            ToDoRepository.BewaarTaak(taak);
+            _taakRepository.BewaarTaak(taak);
             
         }
         public List<Taak> GeefAlleTaken()
         {
-            return ToDoRepository.GeefAlleTaken();
+            return _taakRepository.GeefAlleTaken();
 
         }
         public Taak GeefTaakMetId(int id)
         {
-            return ToDoRepository.GeefTaakMetId(id);
+            return _taakRepository.GeefTaakMetId(id);
         }
 
 

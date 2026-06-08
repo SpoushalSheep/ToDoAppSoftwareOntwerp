@@ -53,7 +53,7 @@
 
 
                 <Picker Title="Selecteer gebruiker"
-                                SelectedItem="{Binding Persoon}"
+                                SelectedItem="{Binding PersoonViewModel}"
                                 Margin="10,0"
                                 TitleColor="White"
                                 ItemsSource="{Binding Personen}"

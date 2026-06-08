@@ -82,5 +82,10 @@ namespace ToDoAppUI.ViewModels
                 Id = Id
             };
         }
+
+        public override string ToString()
+        {
+            return $"{Voornaam} {Achternaam}";
+        }
     }
 }

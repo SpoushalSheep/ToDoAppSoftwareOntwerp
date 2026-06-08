@@ -2,6 +2,7 @@
 using ToDoAppBL.Messages;
 using ToDoAppBL.Models;
 using ToDoAppBL.Services;
+using ToDoAppUI.Converters;
 using ToDoAppUI.services;
 using ToDoAppUI.ViewModels.Base;
 
@@ -16,8 +17,8 @@ namespace ToDoAppUI.ViewModels
         public ICommand BewaarCommand { get; init; }
         public ICommand AnnuleerCommand { get; init; }
 
-        private List<Persoon> _personen;
-        public List<Persoon> Personen
+        private List<PersoonViewModel> _personen;
+        public List<PersoonViewModel> Personen
         {
             get => _personen;
             set
@@ -52,14 +53,14 @@ namespace ToDoAppUI.ViewModels
             }
         }
 
-        private Persoon _persoon;
-        public Persoon Persoon
+        private PersoonViewModel _persoonViewModel;
+        public PersoonViewModel PersoonViewModel
         {
-            get => _persoon;
+            get => _persoonViewModel;
 
             set
             {
-                _persoon = value;
+                _persoonViewModel = value;
                 NotifyPropertyChanged();
             }
         }
@@ -83,8 +84,9 @@ namespace ToDoAppUI.ViewModels
             toDoService = _toDoService;
             BewaarCommand = new Command(async () => await BewaarTaak()); // geeft het command een betekenisvolle opdracht
             AnnuleerCommand = new Command(async () => await AnnuleerTaak());
-            Personen = toDoService.GeefAllePersonen();
+            Personen = new List<PersoonViewModel>(toDoService.GeefAllePersonen().Select(PersoonConverter.NaarViewModel));
         }
+       
 
 
         private async Task BewaarTaak() // belangerijke methode
@@ -101,7 +103,7 @@ namespace ToDoAppUI.ViewModels
 
 
             }
-            else if (Persoon == null)
+            else if (PersoonViewModel == null)
             {
                 await Shell.Current.DisplayAlert("Fout", "geen persoon toegewezen", "OK");
                 return;
@@ -110,7 +112,7 @@ namespace ToDoAppUI.ViewModels
 
             Taak.Titel = Titel;
             Taak.Beschrijving = Beschrijving;
-            Taak.Persoon = Persoon;
+            Taak.Persoon = PersoonViewModel.NaarPersoon();
             Taak.IsAfgewerkt = IsAfgewerkt;
 
             toDoService.BewaarTaak(Taak);
@@ -130,7 +132,7 @@ namespace ToDoAppUI.ViewModels
                 Taak = toDoService.GeefTaakMetId(taakVM.Id);
                 Titel = Taak.Titel;
                 Beschrijving = Taak.Beschrijving;
-                Persoon = Taak.Persoon;
+                PersoonViewModel = Personen.FirstOrDefault(p => p.Id == Taak.Persoon?.Id);
                 IsAfgewerkt = Taak.IsAfgewerkt;
                 
             }

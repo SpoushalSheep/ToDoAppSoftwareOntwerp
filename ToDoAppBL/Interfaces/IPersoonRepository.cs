@@ -2,7 +2,7 @@
 
 namespace ToDoAppBL.Interfaces
 {
-    public interface IToDoRepository
+    public interface IPersoonRepository
     {
         //geeft taken door naar de Repository
         void BewaarPersoon(Persoon p);
@@ -12,9 +12,7 @@ namespace ToDoAppBL.Interfaces
 
 
 
-        void BewaarTaak(Taak t);
-        List<Taak> GeefAlleTaken();
-        Taak GeefTaakMetId(int id);
+       
 
     }
 }

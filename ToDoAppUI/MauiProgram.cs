@@ -25,7 +25,8 @@ namespace ToDoAppUI
             
             builder.Services.AddSingleton<MessageService>();      
             builder.Services.AddSingleton<ToDoService>();         
-            builder.Services.AddSingleton<IToDoRepository, ToDoRepository>(); 
+            builder.Services.AddSingleton<ITaakRepository, TaakRepository>();
+            builder.Services.AddSingleton<IPersoonRepository, PersoonRepository>();
             builder.Services.AddSingleton<NavigationService>();   
             builder.Services.AddSingleton<TakenLijstViewModel>(); 
             builder.Services.AddSingleton<MainPage>();
