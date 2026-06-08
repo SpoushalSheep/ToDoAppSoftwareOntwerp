@@ -7,39 +7,46 @@ namespace ToDoAppDL.Repositories
     public class TaakRepository : ITaakRepository
     {
 
-        private readonly string Pad;
+        private DataBaseConnection _DatabaseConnection { get; }
+        private IPersoonRepository _persoonRepository { get; }
 
-        public TaakRepository(string pad = "ToDoDataBase.db") // pad/naam van de database als er nog geen db bestaat maakt hij er 1 aan
+        public ILiteCollection<Taak> GetCollection()
         {
-            Pad = pad;
+            return _DatabaseConnection.GetCollection<Taak>();
+        }
+
+
+        public TaakRepository(DataBaseConnection dataBaseConnection, IPersoonRepository persoonRepository) // pad/naam van de database als er nog geen db bestaat maakt hij er 1 aan
+        {
+            _DatabaseConnection = dataBaseConnection;
+            _persoonRepository = persoonRepository;
         }
         public void BewaarTaak(Taak t)
         {
-            using (LiteDatabase db = new LiteDatabase(Pad))
-            {
-                var collectie = db.GetCollection<Taak>("taken");
-                collectie.Upsert(t);
-            }
+            GetCollection().Upsert(t);
         }
+
+     
 
 
         public List<Taak> GeefAlleTaken()
         {
-            using (LiteDatabase db = new LiteDatabase(Pad))
+           List<Taak> taken = GetCollection().FindAll().ToList();
+            foreach (Taak t in taken)
             {
-                var collectie = db.GetCollection<Taak>("taken");
-                return collectie.FindAll().ToList();
+                if (t.Persoon?.Id > 0)
+                    t.Persoon = _persoonRepository.GeefPersoonMetId(t.Persoon.Id);
             }
+            return taken;
         }
 
 
         public Taak GeefTaakMetId(int id)
         {
-            using (LiteDatabase db = new LiteDatabase(Pad))
-            {
-                var collectie = db.GetCollection<Taak>("taken");
-                return collectie.FindById(id);
-            }
+            Taak t = GetCollection().FindById(id);
+            if (t.Persoon?.Id > 0)
+                t.Persoon = _persoonRepository.GeefPersoonMetId(t.Persoon.Id);
+            return t;
         }
 
     }

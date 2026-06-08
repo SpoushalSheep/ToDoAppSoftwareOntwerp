@@ -17,6 +17,8 @@ namespace ToDoAppUI.ViewModels
         public ICommand BewaarCommand { get; init; }
         public ICommand AnnuleerCommand { get; init; }
 
+        private bool IsNew;
+
         private List<PersoonViewModel> _personen;
         public List<PersoonViewModel> Personen
         {
@@ -117,7 +119,15 @@ namespace ToDoAppUI.ViewModels
 
             toDoService.BewaarTaak(Taak);
 
-            messageService.Send(new TaakUpdateMessage(Taak));
+            if (IsNew) {
+                messageService.Send(new TaakAddMessage(Taak));
+
+            }
+            else
+            {
+                messageService.Send(new TaakUpdateMessage(Taak));
+
+            }
             await navigationService.GoToAsync("..");
 
         }
@@ -134,10 +144,11 @@ namespace ToDoAppUI.ViewModels
                 Beschrijving = Taak.Beschrijving;
                 PersoonViewModel = Personen.FirstOrDefault(p => p.Id == Taak.Persoon?.Id);
                 IsAfgewerkt = Taak.IsAfgewerkt;
-                
+                IsNew = false;
             }
             else
             {
+                IsNew = true;
                 Taak = new Taak("", "", false, null);
             }
         }

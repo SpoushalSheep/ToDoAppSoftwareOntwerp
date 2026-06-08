@@ -85,7 +85,7 @@ namespace ToDoAppUI.ViewModels
 
         public override string ToString()
         {
-            return $"{Voornaam} {Achternaam}";
+            return $"{Voornaam} {Achternaam} ({Leeftijd})";
         }
     }
 }

@@ -12,7 +12,7 @@ namespace ToDoAppUI.ViewModels
         public NavigationService NavigationService { get; }
         public ToDoService ToDoService { get; }
         public MessageService MessageService { get; set; }
-
+        private bool IsNew = false;
         public Persoon Persoon { get; private set; }
 
 
@@ -103,8 +103,29 @@ namespace ToDoAppUI.ViewModels
             Persoon.GeboorteDatum = DateOnly.FromDateTime(GeboorteDatum);
 
             ToDoService.BewaarPersoon(Persoon);
+            List<Taak> taken = ToDoService.GeefAlleTaken();
 
-            MessageService.Send(new PersoonUpdateMessage(Persoon.Id, ToDoService.GeefPersoonMetId(Persoon.Id)));
+            List<Taak> gelinkteTaken = taken.Where(t => t.Persoon.Id == Persoon.Id).ToList();
+            foreach (Taak t in taken) {
+
+                t.Persoon.Voornaam = Voornaam;
+                t.Persoon.Achternaam = Achternaam;
+                t.Persoon.Url = Url;
+                t.Persoon.GeboorteDatum = DateOnly.FromDateTime(GeboorteDatum);
+
+                ToDoService.BewaarTaak(t);
+            }
+
+            if (IsNew)
+            {
+                MessageService.Send(new PersoonAddMessage(Persoon));
+
+            }
+            else
+            {
+                MessageService.Send(new PersoonUpdateMessage(Persoon.Id, ToDoService.GeefPersoonMetId(Persoon.Id)));
+                
+            }
 
             await NavigationService.GoToAsync("..");
 
@@ -126,7 +147,7 @@ namespace ToDoAppUI.ViewModels
             string action = await Shell.Current.DisplayActionSheet("ActionSheet: Weet je zeker dat je deze persoon wilt verwijderen?", "Cancel", "Delete");
             if (action == "Delete") {
                 ToDoService.VerwijderPersoon(Persoon.Id);
-                MessageService.Send(new PersoonUpdateMessage(Persoon.Id, null));
+                MessageService.Send(new PersoonVerwijderMessage(Persoon));
                 await NavigationService.GoToAsync("..");
             }
             else
@@ -148,7 +169,10 @@ namespace ToDoAppUI.ViewModels
             }
             else
             {
-                Persoon = new Persoon("", "", "", DateOnly.FromDateTime(DateTime.Now));
+                Persoon = new Persoon("", "", "", DateOnly.FromDateTime(DateTime.Now));      
+                IsNew = true;
+
+
             }
         }
     }

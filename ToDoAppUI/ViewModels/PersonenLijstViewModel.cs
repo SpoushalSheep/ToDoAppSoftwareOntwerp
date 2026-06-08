@@ -36,36 +36,35 @@ namespace ToDoAppUI.ViewModels
 
             Personen = new ObservableCollection<PersoonViewModel>(toDoService.GeefAllePersonen().Select(ConvertToViewModel)); // vraagt alle personen op en zet ze om naar PersoonVM
             GaNaarNieuwPersoon = new Command(async () => await OnNieuwPersoon()); // geeft het command een "job"
-            RegistreerMessage();
+            RegistreerMessages();
 
         }
 
-        private void RegistreerMessage()
+        private void RegistreerMessages()
         {
             messageService.Register<PersoonUpdateMessage>(this, (sender, message) =>
             {
-                if (message.PersoonUpdate == null)
-                {
 
-                    var teVerwijderen = Personen.FirstOrDefault(o => o.Id == message.PersoonId, null);
-                    if (teVerwijderen != null)
-                        Personen.Remove(teVerwijderen);
-                    return;
-                }
 
-                var persoonViewModel = Personen.FirstOrDefault(o => o.Id == message.PersoonUpdate.Id);
-                if (persoonViewModel != null)
-                {
+                PersoonViewModel persoonViewModel = Personen.Where(x => x.Id == message.PersoonUpdate.Id).First();
+
+
                     persoonViewModel.Voornaam = message.PersoonUpdate.Voornaam;
                     persoonViewModel.Achternaam = message.PersoonUpdate.Achternaam;
                     persoonViewModel.Url = message.PersoonUpdate.Url;
                     persoonViewModel.GeboorteDatum = message.PersoonUpdate.GeboorteDatum.ToDateTime(TimeOnly.MinValue);
-                }
-                else
-                {
-                    var nieuwePersoonVM = ConvertToViewModel(message.PersoonUpdate);
-                    Personen.Add(nieuwePersoonVM);
-                }
+                
+             
+            });
+            messageService.Register<PersoonVerwijderMessage>(this, (sender, message) => { 
+            
+                    PersoonViewModel teVerwijderen = Personen.Where(x => x.Id == message.PersoonVerwijder.Id).First();
+                    Personen.Remove(teVerwijderen);
+            });
+            messageService.Register<PersoonAddMessage>(this, (sender, message) =>
+            {
+                PersoonViewModel nieuwePersoonVM = ConvertToViewModel(message.PersoonAdd);
+                Personen.Add(nieuwePersoonVM);
             });
         }
         private async Task OnNieuwPersoon()

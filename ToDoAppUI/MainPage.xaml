@@ -54,7 +54,7 @@
                                 <VerticalStackLayout Grid.Column="2" 
                                  VerticalOptions="Center"
                                  HorizontalOptions="End">
-                                    <Label Text="{Binding Persoon}" 
+                                    <Label Text="{Binding PersoonViewModel}" 
                        FontSize="Subtitle" 
                        TextColor="White"
                        HorizontalTextAlignment="End"/>

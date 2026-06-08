@@ -24,7 +24,9 @@ namespace ToDoAppUI
             builder.Services.AddSingleton<AppShell>();
             
             builder.Services.AddSingleton<MessageService>();      
-            builder.Services.AddSingleton<ToDoService>();         
+            builder.Services.AddSingleton<ToDoService>();
+            builder.Services.AddSingleton< DataBaseConnection>();
+
             builder.Services.AddSingleton<ITaakRepository, TaakRepository>();
             builder.Services.AddSingleton<IPersoonRepository, PersoonRepository>();
             builder.Services.AddSingleton<NavigationService>();   

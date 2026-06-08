@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 using ToDoAppBL.Messages;
 using ToDoAppBL.Models;
@@ -72,41 +73,55 @@ namespace ToDoAppUI.ViewModels
             SorteerMeestRecentCommand = new Command(() => SorteerMeestRecent());
 
             _AlleTaken = new ObservableCollection<TaakViewModel>(todoService.GeefAlleTaken().Select(x => TaakConverter.NaarViewModel(x, todoService, messageService)));
-           
 
+            RegisteerMessages();
             SorteerAlles();
-            messageService.Register<TaakUpdateMessage>(this, (sender, message) =>
-            {
-                var taakViewModel = _AlleTaken.FirstOrDefault(o => o.Id == message.TaakUpdate.Id);
-
-                if (taakViewModel != null)
-                {
-
-                    taakViewModel.Titel = message.TaakUpdate.Titel;
-                    taakViewModel.Beschrijving = message.TaakUpdate.Beschrijving;
-                    taakViewModel.PersoonViewModel = PersoonConverter.NaarViewModel( message.TaakUpdate.Persoon);
-
-                    taakViewModel.UpdateIsAfgewerktZonderMessage(message.TaakUpdate.IsAfgewerkt);
-                    if (taakViewModel.IsAfgewerkt && TakenLijst.Contains(taakViewModel) &&  _activeState is NietAfgewerktState)
-                    {
-                        TakenLijst.Remove(taakViewModel);
-                    }
-
-
-                }
-                else
-                {
-
-                    TaakViewModel nieuweTaakVM = TaakConverter.NaarViewModel( message.TaakUpdate, _todoService, _messageService);
-                    _AlleTaken.Add(nieuweTaakVM);
-                    _activeState.Save(nieuweTaakVM);
-                    TakenLijst = _activeState._gesorteerdeLijst;
-                }
-            });
+          
         }
 
 
-      
+        private void RegisteerMessages()
+        {
+            messageService.Register<TaakUpdateMessage>(this, (sender, message) =>
+            {
+                TaakViewModel taakViewModel = _AlleTaken.FirstOrDefault(o => o.Id == message.TaakUpdate.Id);
+                    taakViewModel.Titel = message.TaakUpdate.Titel;
+                    taakViewModel.Beschrijving = message.TaakUpdate.Beschrijving;
+                    taakViewModel.PersoonViewModel = PersoonConverter.NaarViewModel(message.TaakUpdate.Persoon);
+
+                   taakViewModel.UpdateIsAfgewerktZonderMessage(message.TaakUpdate.IsAfgewerkt);
+
+
+                if (taakViewModel.IsAfgewerkt && TakenLijst.Contains(taakViewModel) && _activeState is NietAfgewerktState)
+                {
+                    TakenLijst.Remove(taakViewModel);
+                }
+            });
+            messageService.Register<TaakAddMessage>(this, (sender, message) =>
+            {
+                TaakViewModel nieuweTaakVM = TaakConverter.NaarViewModel(message.TaakUpdate, todoService, messageService);
+                _AlleTaken.Add(nieuweTaakVM);
+                _activeState.Save(nieuweTaakVM);
+                TakenLijst = _activeState._gesorteerdeLijst;
+            });
+                messageService.Register<PersoonUpdateMessage>(this, (sender, message) =>
+            {
+
+                
+               
+                foreach (TaakViewModel t in _activeState._takenLijst.Where(t => t.PersoonViewModel.Id == message.PersoonUpdate.Id).ToList())
+                {
+                    t.PersoonViewModel.Voornaam = message.PersoonUpdate.Voornaam;
+                    t.PersoonViewModel.Achternaam = message.PersoonUpdate.Achternaam;
+                    t.PersoonViewModel.Url = message.PersoonUpdate.Url;
+                    t.PersoonViewModel.GeboorteDatum = message.PersoonUpdate.GeboorteDatum.ToDateTime(TimeOnly.MinValue) ;
+                }
+
+                _activeState.Sort();
+                TakenLijst = _activeState._gesorteerdeLijst;
+            });
+
+        }
 
         private void SorteerMeestRecent()
         {
