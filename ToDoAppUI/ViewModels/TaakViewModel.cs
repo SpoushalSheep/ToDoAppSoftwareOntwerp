@@ -63,7 +63,7 @@ namespace ToDoAppUI.ViewModels
 
                 
                 Taak taak = NaarTaak();
-                toDoService.BewaarTaak(taak);
+                toDoService.BewaarTaak(taak,false);
                 messageService.Send(new TaakUpdateMessage(taak));
 
 

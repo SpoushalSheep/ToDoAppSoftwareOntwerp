@@ -10,7 +10,7 @@ namespace ToDoAppUI.ViewModels
 {
     public class TaakDetailViewModel : ViewModel, IQueryAttributable
     {
-        public MessageService messageService { get; set; }
+       
         public NavigationService navigationService { get; }
         public ToDoService toDoService { get; }
 
@@ -79,9 +79,8 @@ namespace ToDoAppUI.ViewModels
             }
         }
        
-        public TaakDetailViewModel(NavigationService _navigationService, ToDoService _toDoService, MessageService _messageService)
+        public TaakDetailViewModel(NavigationService _navigationService, ToDoService _toDoService)
         {
-            messageService = _messageService;
             navigationService = _navigationService;
             toDoService = _toDoService;
             BewaarCommand = new Command(async () => await BewaarTaak()); // geeft het command een betekenisvolle opdracht
@@ -102,8 +101,6 @@ namespace ToDoAppUI.ViewModels
             {
                 await Shell.Current.DisplayAlert("Fout", "beschrijving is niet ingevuld", "OK");
                 return;
-
-
             }
             else if (PersoonViewModel == null)
             {
@@ -117,17 +114,8 @@ namespace ToDoAppUI.ViewModels
             Taak.Persoon = PersoonViewModel.NaarPersoon();
             Taak.IsAfgewerkt = IsAfgewerkt;
 
-            toDoService.BewaarTaak(Taak);
+            toDoService.BewaarTaak(Taak,IsNew);
 
-            if (IsNew) {
-                messageService.Send(new TaakAddMessage(Taak));
-
-            }
-            else
-            {
-                messageService.Send(new TaakUpdateMessage(Taak));
-
-            }
             await navigationService.GoToAsync("..");
 
         }
@@ -144,6 +132,7 @@ namespace ToDoAppUI.ViewModels
                 Beschrijving = Taak.Beschrijving;
                 PersoonViewModel = Personen.FirstOrDefault(p => p.Id == Taak.Persoon?.Id);
                 IsAfgewerkt = Taak.IsAfgewerkt;
+
                 IsNew = false;
             }
             else

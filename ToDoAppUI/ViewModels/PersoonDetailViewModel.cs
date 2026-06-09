@@ -11,7 +11,7 @@ namespace ToDoAppUI.ViewModels
     {
         public NavigationService NavigationService { get; }
         public ToDoService ToDoService { get; }
-        public MessageService MessageService { get; set; }
+        
         private bool IsNew = false;
         public Persoon Persoon { get; private set; }
 
@@ -21,11 +21,11 @@ namespace ToDoAppUI.ViewModels
         public ICommand AnuleerCommand { get; init; }
         public ICommand VerwijderCommand { get; init; }
 
-        public PersoonDetailViewModel(NavigationService navigationService, ToDoService toDoService, MessageService messageService)
+        public PersoonDetailViewModel(NavigationService navigationService, ToDoService toDoService)
         {
             NavigationService = navigationService;
             ToDoService = toDoService;
-            MessageService = messageService;
+           
 
             BewaarCommand = new Command(async () => await BewaarPersoon()); // geeft het command een betekenisvolle opdracht
             AnuleerCommand = new Command(async () => await AnuleerPersoon());
@@ -85,47 +85,24 @@ namespace ToDoAppUI.ViewModels
             {
                 await Shell.Current.DisplayAlert("Fout", "Voornaam is niet ingevuld", "OK");
                 return;
-            }else if(string.IsNullOrWhiteSpace(Achternaam))
+            }
+            else if (string.IsNullOrWhiteSpace(Achternaam))
             {
                 await Shell.Current.DisplayAlert("Fout", "Achternaam is niet ingevuld", "OK");
                 return;
-
-
-            }else if(GeboorteDatum >= DateTime.Today) {
+            }
+            else if (GeboorteDatum >= DateTime.Today)
+            {
                 await Shell.Current.DisplayAlert("Fout", "Geboorte Datum niet geldig", "OK");
                 return;
             }
 
-
-                Persoon.Voornaam = Voornaam;
+            Persoon.Voornaam = Voornaam;
             Persoon.Achternaam = Achternaam;
             Persoon.Url = Url;
             Persoon.GeboorteDatum = DateOnly.FromDateTime(GeboorteDatum);
 
-            ToDoService.BewaarPersoon(Persoon);
-            List<Taak> taken = ToDoService.GeefAlleTaken();
-
-            List<Taak> gelinkteTaken = taken.Where(t => t.Persoon.Id == Persoon.Id).ToList();
-            foreach (Taak t in taken) {
-
-                t.Persoon.Voornaam = Voornaam;
-                t.Persoon.Achternaam = Achternaam;
-                t.Persoon.Url = Url;
-                t.Persoon.GeboorteDatum = DateOnly.FromDateTime(GeboorteDatum);
-
-                ToDoService.BewaarTaak(t);
-            }
-
-            if (IsNew)
-            {
-                MessageService.Send(new PersoonAddMessage(Persoon));
-
-            }
-            else
-            {
-                MessageService.Send(new PersoonUpdateMessage(Persoon.Id, ToDoService.GeefPersoonMetId(Persoon.Id)));
-                
-            }
+            ToDoService.BewaarPersoon(Persoon,IsNew);
 
             await NavigationService.GoToAsync("..");
 
@@ -136,18 +113,16 @@ namespace ToDoAppUI.ViewModels
         }
         private async Task VerwijderPersoon() // verwijderd de persoon
         {
-            List<Taak> taken = ToDoService.GeefAlleTaken();
-
+           List<Taak> taken = ToDoService.GeefAlleTaken();
            List<Taak> gelinkteTaken = taken.Where(t => t.Persoon.Id == Persoon.Id).ToList();
-
             if (gelinkteTaken.Count > 0) { 
                 await Shell.Current.DisplayAlert("Fout", "Er zijn nog taken gelinkt aan deze persoon", "OK");
                 return;
             }
             string action = await Shell.Current.DisplayActionSheet("ActionSheet: Weet je zeker dat je deze persoon wilt verwijderen?", "Cancel", "Delete");
             if (action == "Delete") {
-                ToDoService.VerwijderPersoon(Persoon.Id);
-                MessageService.Send(new PersoonVerwijderMessage(Persoon));
+                ToDoService.VerwijderPersoon(Persoon);
+                
                 await NavigationService.GoToAsync("..");
             }
             else
